@@ -27,8 +27,7 @@ export class UserController {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, email } = req.body;
-      const id = uuidv4();
-      const user = await UserServiceContainer.create.execute(id, name, email);
+      const user = await UserServiceContainer.create.execute(name, email);
 
       return res.status(201).json(user.mapToPrimitives());
     } catch (error) {

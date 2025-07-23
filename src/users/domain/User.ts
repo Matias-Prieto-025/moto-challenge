@@ -4,22 +4,22 @@ import { UserName } from "./valueObjects/UserName";
 
 
 export class User {
-  id: UserId;
+  id: UserId | null;
   name: UserName;
   email: UserEmail;
-  createdAt: Date;
+  createdAt: Date | null;
   updatedAt: Date | null;
 
   constructor(
-    id: UserId,
     name: UserName,
     email: UserEmail,
-    createdAt: Date
+    id?: UserId | null,
+    createdAt?: Date,
   ) {
-    this.id = id;
+    this.id = id || null;
     this.name = name;
     this.email = email;
-    this.createdAt = createdAt;
+    this.createdAt = createdAt || null;
     this.updatedAt = null;
   }
 
@@ -37,7 +37,7 @@ export class User {
 
   public mapToPrimitives() {
     return {
-      id: this.id.value,
+      id: this.id?.value,
       name: this.name.value,
       email: this.email.value,
       createdAt: this.createdAt,
