@@ -1,7 +1,7 @@
-import { ResourceNotFoundError } from '@shared/errors/domain/ResourceNotFoundError';
+import { ResourceNotFoundError } from '@shared/errors/ResourceNotFoundError';
 
 export class UserNotFoundError extends ResourceNotFoundError {
-  constructor() {
-    super('User');
+  constructor(message: string = 'User not found') {
+    super('UserNotFoundError', message);
   }
 }

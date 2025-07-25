@@ -1,7 +1,6 @@
 import { User } from '../domain/User';
 import { UserRepository } from '../domain/UserRepository';
 import { UserEmail } from '../domain/valueObjects/UserEmail';
-import { UserId } from '../domain/valueObjects/UserId';
 import { UserName } from '../domain/valueObjects/UserName';
 
 export class UserCreate {
@@ -17,6 +16,8 @@ export class UserCreate {
       new UserEmail(email),
     );
 
-    return await this.repository.create(user);
+    const createdUser = await this.repository.create(user);
+
+    return createdUser;
   }
 }

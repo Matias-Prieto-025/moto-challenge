@@ -1,6 +1,6 @@
-import { UserValidationError } from "../errors/UserValidationError";
+import { AuthValidationError } from "../errors/AuthValidationError";
 
-export class UserEmail {
+export class AuthEmail {
   readonly value: string;
 
   constructor(value: string) {
@@ -12,7 +12,7 @@ export class UserEmail {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(this.value)) {
-      throw new UserValidationError('UserEmail must be a valid email address');
+      throw new AuthValidationError('Auth email must be a valid email address');
     }
   }
 }

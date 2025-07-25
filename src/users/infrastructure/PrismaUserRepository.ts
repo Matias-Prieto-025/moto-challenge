@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { ValidationError } from "@shared/errors/domain/ValidationError";
 import { User } from "../domain/User";
 import { UserRepository } from "../domain/UserRepository";
 import { UserId } from "../domain/valueObjects/UserId";
 import { UserEmail } from "../domain/valueObjects/UserEmail";
 import { UserName } from "../domain/valueObjects/UserName";
+import { UserValidationError } from "../domain/errors/UserValidationError";
 
 export class PrismaUserRepository implements UserRepository {
   private prisma: PrismaClient;
@@ -14,6 +14,16 @@ export class PrismaUserRepository implements UserRepository {
   }
 
   async create(user: User): Promise<User> {
+    const existingUser = await this.prisma.user.findUnique({
+      where: {
+        email: user.email.value,
+      },
+    });
+
+    if (existingUser) {
+      throw new UserValidationError('User already exists');
+    }
+
     const newUser = await this.prisma.user.create({
       data: {
         email: user.email.value,
@@ -38,7 +48,7 @@ export class PrismaUserRepository implements UserRepository {
 
   async getById(id: UserId): Promise<User | null> {
     if (!id) {
-      throw new ValidationError('Id is required');
+      throw new UserValidationError('Id is required');
     }
     const user = await this.prisma.user.findUnique({
       where: {
@@ -54,7 +64,7 @@ export class PrismaUserRepository implements UserRepository {
 
   async edit(user: User): Promise<User> {
     if (!user.id) {
-      throw new ValidationError('Id is required');
+      throw new UserValidationError('Id is required');
     }
 
     const updatedUser = await this.prisma.user.update({
