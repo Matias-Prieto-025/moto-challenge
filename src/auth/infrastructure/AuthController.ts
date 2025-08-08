@@ -23,7 +23,7 @@ export class AuthController {
     try {
       const { email, password, provider } = req.body;
       const result = await AuthServiceContainer.signIn.execute(email, password, provider);
-      // Now Sending email to user with token in the request body. Probably send jwt in a cookie.
+      // Now Sending the email address to user with token in the request body. Probably send jwt in a cookie.
       return res.status(200).json(result);
     } catch (error) {
       next(error);
