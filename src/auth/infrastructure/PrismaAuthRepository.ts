@@ -21,6 +21,10 @@ export class PrismaAuthRepository implements AuthRepository {
     return bcrypt.hash(password, 10);
   }
 
+  private checkPassword(password: string, passwordHash: string): Promise<boolean> {
+    return bcrypt.compare(password, passwordHash);
+  }
+
   async signUp(
     userId: AuthUserId,
     provider: AuthProvider,
@@ -47,7 +51,6 @@ export class PrismaAuthRepository implements AuthRepository {
 
     const authAccount = await this.prisma.authAccount.create({
       data: {
-        id: userId.value,
         email: email.value,
         provider: provider.value,
         providerId: authProviderId,
@@ -61,14 +64,40 @@ export class PrismaAuthRepository implements AuthRepository {
     });
 
     return {
-      id: authAccount.id, // TODO: fix or remove this
       email: authAccount.email,
       provider: authAccount.provider,
     };
   }
 
-  async signIn(email: AuthEmail, password: AuthPassword): Promise<AuthResultDTO> {
-    throw new Error("Method not implemented.");
-  }
+  async signIn(email: AuthEmail, password: AuthPassword, provider: AuthProvider): Promise<AuthUserId> {
+    if (!password) {
+      throw new AuthValidationError('Password is required');
+    }
 
+    const authAccount = await this.prisma.authAccount.findFirst({
+      where: {
+        email: email.value,
+        provider: provider.value,
+      },
+    });
+
+    if (!authAccount) {
+      throw new AuthValidationError('Invalid email or password');
+    }
+
+    if (provider.getShouldUsePassword()) {
+      if (!authAccount.passwordHash) {
+        throw new AuthValidationError('Invalid email or password');
+      }
+
+      const isPasswordValid = await this.checkPassword(password.value, authAccount.passwordHash);
+
+      if (!isPasswordValid) {
+        throw new AuthValidationError('Invalid email or password');
+      }
+    }
+    
+
+    return new AuthUserId(authAccount.userId);
+  }
 }

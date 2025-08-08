@@ -1,15 +1,13 @@
 import { AuthSignUp } from "@auth/application/AuthSignUp";
 import { AuthSignIn } from "@auth/application/AuthSignIn";
 import { PrismaAuthRepository } from "@auth/infrastructure/PrismaAuthRepository";
-import { UserCreate } from "@users/application/UserCreate";
-import { UserRepository } from "@users/domain/UserRepository";
-import { PrismaUserRepository } from "@users/infrastructure/PrismaUserRepository";
+import { JWTRepositoryImpl } from "@auth/infrastructure/JWTRepository";
+import { UserServiceContainer } from "./userServiceContainer";
 
 const authRepository = new PrismaAuthRepository();
-const userRepository = new PrismaUserRepository();
-const userCreateUseCase = new UserCreate(userRepository);
+const jwtRepository = new JWTRepositoryImpl();
 
 export const AuthServiceContainer = {
-  signUp: new AuthSignUp(authRepository, userCreateUseCase),
-  signIn: new AuthSignIn(authRepository),
+  signUp: new AuthSignUp(authRepository, UserServiceContainer.create),
+  signIn: new AuthSignIn(authRepository, jwtRepository),
 }

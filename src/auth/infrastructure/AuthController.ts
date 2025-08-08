@@ -21,8 +21,9 @@ export class AuthController {
 
   async signIn(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, password } = req.body;
-      const result = await AuthServiceContainer.signIn.execute(email, password);
+      const { email, password, provider } = req.body;
+      const result = await AuthServiceContainer.signIn.execute(email, password, provider);
+      // Now Sending email to user with token in the request body. Probably send jwt in a cookie.
       return res.status(200).json(result);
     } catch (error) {
       next(error);

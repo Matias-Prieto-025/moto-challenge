@@ -61,7 +61,6 @@ export class AuthSignUp {
     );
 
     return {
-      id: result.id,
       email: result.email,
       provider: result.provider,
     };

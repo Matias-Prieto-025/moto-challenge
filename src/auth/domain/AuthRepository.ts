@@ -1,4 +1,3 @@
-import { AuthResultDTO } from "./AuthResultDTO";
 import { AuthUserDTO } from "./AuthUserDTO";
 import { AuthEmail } from "./valueObjects/AuthEmail";
 import { AuthPassword } from "./valueObjects/AuthPassword";
@@ -7,7 +6,12 @@ import { AuthProviderId } from "./valueObjects/AuthProviderId";
 import { AuthUserId } from "./valueObjects/AuthUserId";
 
 export interface AuthRepository {
-  signIn(email: AuthEmail, password: AuthPassword): Promise<AuthResultDTO>;
+  signIn(
+    email: AuthEmail,
+    password: AuthPassword,
+    authProvider: AuthProvider,
+  ): Promise<AuthUserId>;
+
   signUp(
     userId: AuthUserId,
     provider: AuthProvider,
